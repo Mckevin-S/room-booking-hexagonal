@@ -24,7 +24,7 @@ final class ApiDtos {
     record UserDto(long id, String email, String fullName, String initials, boolean officeManager, String homeSiteId) {
 
         static UserDto of(Account account) {
-            return new UserDto(account.id().value(), account.email(), account.fullName(), initials(account.fullName()),
+            return new UserDto(account.id().value(), account.email(), account.fullName(), ApiDtos.initials(account.fullName()),
                     account.officeManager(), account.homeSite().value());
         }
     }
