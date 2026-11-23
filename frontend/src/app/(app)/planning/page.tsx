@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronLeft, ChevronRight, DoorClosed } from 'lucide-react';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BookingDialog, type BookingIntent } from '@/components/BookingDialog';
 import { EmptyState } from '@/components/EmptyState';
 import { Timeline } from '@/components/Timeline';
@@ -42,12 +42,21 @@ export default function PlanningPage() {
   const [intent, setIntent] = useState<BookingIntent | null>(null);
   const [now, setNow] = useState(nowTime());
 
-  const load = useCallback(() => {
-    if (!siteId) return;
-    api.planning(siteId, date).then(setPlanning).catch(toast.error);
-  }, [siteId, date, toast.error]);
+  const [reload, setReload] = useState(0);
+  const notifyError = toast.error;
 
-  useEffect(load, [load]);
+  // Une réponse arrivée après un changement de date ou de site est ignorée : elle n'écrase pas la plus récente
+  useEffect(() => {
+    if (!siteId) return;
+    let current = true;
+    api
+      .planning(siteId, date)
+      .then((p) => current && setPlanning(p))
+      .catch((e) => current && notifyError(e));
+    return () => {
+      current = false;
+    };
+  }, [siteId, date, reload, notifyError]);
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(nowTime()), 60_000);
@@ -130,7 +139,7 @@ export default function PlanningPage() {
         onBooked={(booking) => {
           setIntent(null);
           toast.success(`Salle ${booking.roomName} réservée de ${hourLabel(booking.start)} à ${hourLabel(booking.end)}.`);
-          load();
+          setReload((n) => n + 1);
         }}
       />
     </div>

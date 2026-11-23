@@ -14,14 +14,21 @@ export default function MyBookingsPage() {
   const [past, setPast] = useState(false);
   const [bookings, setBookings] = useState<Booking[] | null>(null);
 
-  const load = useCallback(() => {
-    api.myBookings(past).then(setBookings).catch(toast.error);
-  }, [past, toast.error]);
+  const [reload, setReload] = useState(0);
+  const notifyError = toast.error;
+  const load = useCallback(() => setReload((n) => n + 1), []);
 
+  // Une réponse arrivée après un changement d'onglet est ignorée : elle n'écrase pas la plus récente
   useEffect(() => {
-    setBookings(null);
-    load();
-  }, [load]);
+    let current = true;
+    api
+      .myBookings(past)
+      .then((found) => current && setBookings(found))
+      .catch((e) => current && notifyError(e));
+    return () => {
+      current = false;
+    };
+  }, [past, reload, notifyError]);
 
   const tabs = [
     { value: false, label: 'À venir' },
@@ -42,7 +49,10 @@ export default function MyBookingsPage() {
               role="tab"
               type="button"
               aria-selected={past === tab.value}
-              onClick={() => setPast(tab.value)}
+              onClick={() => {
+                if (tab.value !== past) setBookings(null);
+                setPast(tab.value);
+              }}
               className={`rounded px-4 py-1.5 text-sm font-bold ${past === tab.value ? 'bg-ink text-white' : 'text-ink-soft hover:text-ink'}`}
               data-testid={`tab-${tab.value ? 'past' : 'upcoming'}`}
             >
