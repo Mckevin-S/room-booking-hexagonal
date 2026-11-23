@@ -1,0 +1,59 @@
+@import '@fontsource-variable/public-sans/wght.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    @apply bg-paper text-ink antialiased;
+    font-feature-settings: 'tnum' 1;
+  }
+  h1 {
+    @apply text-[1.75rem] font-extrabold leading-tight tracking-[-0.02em];
+  }
+  h2 {
+    @apply text-lg font-bold leading-snug;
+  }
+  :focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-signal;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-plaque px-4 py-2 text-sm font-bold transition-colors disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply btn bg-signal text-white hover:bg-signal-dark;
+  }
+  .btn-secondary {
+    @apply btn border border-line bg-white text-ink hover:border-ink-faint;
+  }
+  .btn-quiet {
+    @apply btn px-2 text-ink-soft hover:bg-white hover:text-ink;
+  }
+  .btn-danger {
+    @apply btn bg-alert text-white hover:brightness-95;
+  }
+  .field {
+    @apply flex flex-col gap-1 text-sm;
+  }
+  .field > span {
+    @apply font-bold text-ink-soft;
+  }
+  .input {
+    @apply h-10 rounded-plaque border border-line bg-white px-3 text-ink placeholder:text-ink-faint focus:border-signal focus:outline-none focus:ring-2 focus:ring-signal/20;
+  }
+  .panel {
+    @apply rounded-plaque bg-white shadow-plaque;
+  }
+}
