@@ -11,8 +11,8 @@ import static org.assertj.core.api.Assertions.tuple;
 
 import com.mckevin.roombooking.domain.booking.AvailabilitySearch;
 import com.mckevin.roombooking.domain.booking.Booking;
-import com.mckevin.roombooking.domain.booking.BookingPolicy;
-import com.mckevin.roombooking.domain.booking.BookingRequest;
+import com.mckevin.roombooking.domain.booking.BookingId;
+import com.mckevin.roombooking.domain.booking.BookingStatus;
 import com.mckevin.roombooking.domain.booking.SearchCriteria;
 import com.mckevin.roombooking.domain.booking.TimeSlot;
 import com.mckevin.roombooking.domain.room.Equipment;
@@ -41,9 +41,10 @@ class AvailabilitySearchTest {
         return TimeSlot.of(date, LocalTime.of(fromHour, 0), LocalTime.of(toHour, 0));
     }
 
+    /** Occupation existante, reconstituée telle quelle : elle peut dépasser les limites d'une nouvelle demande. */
     private void booked(Room room, TimeSlot slot) {
-        bookings.add(new BookingPolicy().book(
-                new BookingRequest(Fixtures.lille(), room, HUGO_ID, "Déjà réservée", slot, 1), List.of(), List.of(), NOW));
+        bookings.add(new Booking(BookingId.newId(), room.id(), HUGO_ID, "Déjà réservée", slot, 1, NOW,
+                BookingStatus.CONFIRMED, null, null, null));
     }
 
     private AvailabilitySearch.Result search(TimeSlot slot, int attendees, Set<Equipment> equipments) {
