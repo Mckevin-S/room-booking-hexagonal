@@ -3,6 +3,12 @@
 Toutes les évolutions notables du projet sont consignées ici.
 Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le projet respecte le [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [1.0.1] – 2026-11-23
+
+### Corrigé
+
+- Planning et « Mes réservations » : une réponse arrivée après un changement de date, de site ou d'onglet n'écrase plus la plus récente (la page pouvait rester en chargement).
+
 ## [1.0.0] – 2026-11-22
 
 ### Ajouté
@@ -18,4 +24,5 @@ Le format suit [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/) et le pr
 - Tests : unitaires (TDD), propriétés (jqwik), mutation (PIT, seuil 80 %), scénarios Cucumber en français, règles ArchUnit, intégration Testcontainers, front-end Vitest, bout en bout Playwright.
 - Docker Compose et CI GitHub Actions.
 
+[1.0.1]: https://github.com/Mckevin-S/room-booking-hexagonal/releases/tag/v1.0.1
 [1.0.0]: https://github.com/Mckevin-S/room-booking-hexagonal/releases/tag/v1.0.0

@@ -13,7 +13,7 @@
 
     <groupId>com.mckevin</groupId>
     <artifactId>room-booking-hexagonal</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>room-booking-hexagonal</name>
     <description>Réservation de salles de réunion : domaine pur, architecture hexagonale, tests de propriétés et de mutation</description>
 
