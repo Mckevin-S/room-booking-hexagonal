@@ -1,9 +1,11 @@
 package com.mckevin.roombooking.architecture;
 
+import static com.tngtech.archunit.core.domain.JavaClass.Predicates.resideInAPackage;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.classes;
 import static com.tngtech.archunit.lang.syntax.ArchRuleDefinition.noClasses;
 import static com.tngtech.archunit.library.Architectures.onionArchitecture;
 
+import com.tngtech.archunit.base.DescribedPredicate;
 import com.tngtech.archunit.core.importer.ImportOption;
 import com.tngtech.archunit.junit.AnalyzeClasses;
 import com.tngtech.archunit.junit.ArchTest;
@@ -32,7 +34,11 @@ class HexagonalArchitectureTest {
             .adapter("planificateur", "..adapter.in.scheduler..")
             .adapter("persistance", "..adapter.out.persistence..")
             .adapter("securite", "..adapter.out.security..")
-            .adapter("bus-evenements", "..adapter.out.event..");
+            .adapter("bus-evenements", "..adapter.out.event..")
+            // Le domaine n'a pas de couche « services » distincte : ses services (BookingPolicy...) sont des modèles
+            .withOptionalLayers(true)
+            // La configuration assemble l'hexagone : elle a le droit de connaître toutes les couches
+            .ignoreDependency(resideInAPackage("..config.."), DescribedPredicate.alwaysTrue());
 
     @ArchTest
     static final ArchRule seule_la_configuration_assemble_les_cas_d_usage = noClasses()
