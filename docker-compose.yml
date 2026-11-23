@@ -1,0 +1,49 @@
+# Quorum – environnement complet de démonstration
+#   docker compose up -d --build   puis   http://localhost:3000
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: roombooking
+      POSTGRES_USER: roombooking
+      POSTGRES_PASSWORD: roombooking
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U roombooking -d roombooking"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  backend:
+    build: ./backend
+    environment:
+      DB_URL: jdbc:postgresql://db:5432/roombooking
+      DB_USERNAME: roombooking
+      DB_PASSWORD: roombooking
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production-change-me-in-production}
+      DEMO_DATA: ${DEMO_DATA:-true}
+      TZ: Europe/Paris
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: on-failure
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        BACKEND_URL: http://backend:8080
+    # Le front n'est exposé qu'une fois l'API prête : pas d'erreur au premier chargement
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: on-failure
+    ports:
+      - "3000:3000"
+
+volumes:
+  db-data:
